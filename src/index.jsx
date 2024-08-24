@@ -4,16 +4,15 @@ import { Provider } from "react-redux";
 import "./index.css";
 import store from "./redux/store.js";
 import App from "./components/App/App.jsx";
-import { createTheme, CssBaseline, ThemeProvider } from "@mui/material";
-
+import { PrimeReactProvider } from 'primereact/api';
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
-const theme = createTheme()
 root.render(
   <React.StrictMode>
+    <PrimeReactProvider>
       <Provider store={store}>
-        <CssBaseline />
         <App />
       </Provider>
+    </PrimeReactProvider>
   </React.StrictMode>
 );
