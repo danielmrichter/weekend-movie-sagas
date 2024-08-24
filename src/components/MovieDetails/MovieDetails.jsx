@@ -1,35 +1,25 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
-import {
-  useHistory,
-  useParams,
-} from "react-router-dom/cjs/react-router-dom.min";
-
+import { Dialog } from "primereact/dialog";
+import { useDispatch, useSelector } from "react-redux";
+import { Image } from "primereact/image";
 export default function MovieDetails() {
-  const { movieId } = useParams();
-  const [currentMovie, setCurrentMovie] = useState({ movieGenre: [] });
-  const history = useHistory();
-  useEffect(() => {
-    getMovie();
-    console.log(currentMovie);
-  }, []);
-  const getMovie = () => {
-    axios
-      .get(`/api/movies/${movieId}`)
-      .then((res) => {
-        setCurrentMovie(res.data[0]);
-      })
-      .catch((err) => console.log("Error getting movies: ", err));
-  };
+  const dispatch = useDispatch();
+  const visible = useSelector((store) => store.modalVisible);
+  const currentMovie = useSelector((store) => store.currentMovie);
   return (
-    <div data-testid="movieDetails">
-      <button data-testid="toList" onClick={() => history.push("/")}>
-        Back To Movie List
-      </button>
-      <h2>{currentMovie.movieTitle}</h2>
-      <img src={currentMovie.poster} />
-      <h4>{currentMovie.movieGenre.join(" ")}</h4>
+    <Dialog
+      header={<h2>{currentMovie.movieTitle}</h2>}
+      visible={visible}
+      style={{ width: "50vw", background: "white" }}
+      onHide={() => dispatch({ type: "TOGGLE_VISIBILITY" })}
+      closeOnEscape
+    >
+      <Image src={currentMovie.poster} alt="poster"></Image>
+      <div className="genre-list">
+        {currentMovie.movieGenre.map((genre) => (
+          <h4>{genre}&nbsp;</h4>
+        ))}
+      </div>
       <p>{currentMovie.movieDescription}</p>
-    </div>
+    </Dialog>
   );
 }

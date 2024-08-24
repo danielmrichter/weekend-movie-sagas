@@ -1,11 +1,13 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "./MovieList.css";
 import MovieItem from "./MovieItem/MovieItem";
+import MovieDetails from "../MovieDetails/MovieDetails";
 
 function MovieList() {
   const dispatch = useDispatch();
   const movies = useSelector((store) => store.movies);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     dispatch({ type: "FETCH_MOVIES" });
@@ -16,9 +18,10 @@ function MovieList() {
       <h1>MovieList</h1>
       <section className="movies">
         {movies.map((movie) => {
-          return <MovieItem movie={movie} />;
+          return <MovieItem key={movie.id} movie={movie} />;
         })}
       </section>
+      <MovieDetails visible={visible} closeFn={() => setVisible(false)} />
     </main>
   );
 }
