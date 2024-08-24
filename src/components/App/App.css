@@ -1,9 +1,5 @@
 .App {
   text-align: center;
-}
-
-.genre-list{
-  display: flex;
-  justify-content: center;
-  flex-direction: row;
+  margin-left: 5vw;
+  margin-right: 5vw;
 }
