@@ -23,20 +23,28 @@ router.get("/", (req, res) => {
 // This get will trigger if there's an id provided, to return just that movie's details:
 router.get("/:id", (req, res) => {
   // console.log('GET/api/movies request to get: ', req.params.id)
+
+  // This query will join in genres. Since it's a many to many
+  // relationship, it'll pull them together.
+  // For future data display purposes, it'll group it together so
+  // that you're only getting one thing back. To do this,
+  // it'll collapse the genres into one ARRAY.
   const query = `
   SELECT "movies".title AS "movieTitle", 
-  "movies".poster, "movies".description AS "movieDescription",
-  ARRAY_AGG("genres"."name") AS "movieGenre"
- FROM "movies"
-	JOIN "movies_genres" ON "movies".id = "movies_genres".movie_id
-	JOIN "genres" ON "movies_genres".genre_id = "genres".id
-	WHERE "movies".id = $1
-	GROUP BY "movieTitle", "movies".poster, "movieDescription";`;
+    "movies".poster, "movies".description AS "movieDescription",
+    ARRAY_AGG("genres"."name") AS "movieGenre"
+    FROM "movies"
+	  JOIN "movies_genres" ON "movies".id = "movies_genres".movie_id
+	  JOIN "genres" ON "movies_genres".genre_id = "genres".id
+	  WHERE "movies".id = $1
+	  GROUP BY "movieTitle", "movies".poster, "movieDescription";`;
   pool
     .query(query, [req.params.id])
     .then((result) => {
       // console.log(result.rows)
-      res.send(result.rows);
+      // We just need one object, so just send that back instead
+      // of as an array.
+      res.send(result.rows[0]);
     })
     .catch((err) => {
       console.log(err);

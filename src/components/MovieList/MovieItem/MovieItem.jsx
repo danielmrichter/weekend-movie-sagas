@@ -1,14 +1,19 @@
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import { useDispatch } from "react-redux";
+import { Card } from 'primereact/card';
+import { Image } from "primereact/image";
 
 export default function MovieItem({ movie }) {
-    const history = useHistory()
-    const handleClick = () => {
-        history.push(`/details/${movie.id}`)
-    }
+  const dispatch = useDispatch();
+  const handleClick = () =>
+    dispatch({ type: "GET_MOVIE_DETAILS", payload: movie.id });
   return (
-    <div data-testid="movieItem" key={movie.id}>
-      <h3>{movie.title}</h3>
-      <img data-testid="toDetails" onClick={handleClick} src={movie.poster} alt={movie.title} />
-    </div>
+    <Card title={movie.title} pt={{'data-testid':"movieItem"}} key={movie.id} >
+      <Image
+        data-testid="toDetails"
+        onClick={handleClick}
+        src={movie.poster}
+        alt={movie.title}
+      />
+    </Card>
   );
 }
