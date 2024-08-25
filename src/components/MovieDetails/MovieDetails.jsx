@@ -1,7 +1,8 @@
 import { Dialog } from "primereact/dialog";
 import { useDispatch, useSelector } from "react-redux";
 import { Image } from "primereact/image";
-import { Box, Chip } from "@mui/material";
+import { Box } from "@mui/material";
+import { Chip } from 'primereact/chip';
 
 export default function MovieDetails() {
   const dispatch = useDispatch();

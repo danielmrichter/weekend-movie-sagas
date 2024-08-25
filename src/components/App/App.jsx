@@ -3,6 +3,7 @@ import MovieList from '../MovieList/MovieList';
 import './App.css';
 import NavBar from '../NavBar/NavBar';
 import 'primereact/resources/themes/md-dark-deeppurple/theme.css'
+import Search from '../Search/Search';
 
 function App() {
   return (
@@ -13,7 +14,9 @@ function App() {
         <Route path="/" exact>
           <MovieList />
         </Route>
-        {/* Add Movie page */}
+        <Route exact path='/search'>
+          <Search />
+        </Route>
       </Router>
     </div>
   );
