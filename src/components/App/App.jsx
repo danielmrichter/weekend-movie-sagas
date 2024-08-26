@@ -11,10 +11,10 @@ function App() {
       <h1>The Movies Saga!</h1>
       <Router>
         <NavBar />
-        <Route path="/" exact>
+        <Route path="/list" exact>
           <MovieList />
         </Route>
-        <Route exact path='/search'>
+        <Route exact path='/'>
           <Search />
         </Route>
       </Router>
