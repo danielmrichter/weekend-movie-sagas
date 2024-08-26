@@ -35,7 +35,7 @@ router.get("/:id", (req, res) => {
     ARRAY_AGG("genres"."name") AS "movieGenre"
     FROM "movies"
 	  JOIN "movies_genres" ON "movies".id = "movies_genres".movie_id
-	  JOIN "genres" ON "movies_genres".genre_id = "genres".id
+	  JOIN "genres" ON "movies_genres".genre_id = "genres"."TMDB_Id"
 	  WHERE "movies".id = $1
 	  GROUP BY "movieTitle", "movies".poster, "movieDescription";`;
   pool
@@ -57,15 +57,16 @@ router.post("/", (req, res) => {
   // RETURNING "id" will give us back the id of the created movie
   const insertMovieQuery = `
     INSERT INTO "movies" 
-      ("title", "poster", "description")
+      ("title", "poster", "description", "TMDB_Id")
       VALUES
-      ($1, $2, $3)
+      ($1, $2, $3, $4)
       RETURNING "id";
   `;
   const insertMovieValues = [
     req.body.title,
     req.body.poster,
     req.body.description,
+    req.body.TMDB_Id,
   ];
   // FIRST QUERY MAKES MOVIE
   pool
@@ -76,14 +77,29 @@ router.post("/", (req, res) => {
       const createdMovieId = result.rows[0].id;
 
       // Now handle the genre reference:
+
+      // This is weird. Since there's multiple genres, we need to make multiple insert statements...
+      let valuesStatement = "";
+      console.log(req.body.genres);
+      for (let i = 0; i < req.body.genres.length; i++) {
+        console.log("In loop!", valuesStatement);
+        if (i !== req.body.genres.length - 1) {
+          valuesStatement += `($1, $${i + 2}),`;
+        } else {
+          valuesStatement += `($1, $${i + 2});`;
+        }
+      }
       const insertMovieGenreQuery = `
         INSERT INTO "movies_genres" 
           ("movie_id", "genre_id")
           VALUES
-          ($1, $2);
+          ${valuesStatement}
       `;
-      const insertMovieGenreValues = [createdMovieId, req.body.genre_id];
+
+      const insertMovieGenreValues = [createdMovieId, ...req.body.genres];
       // SECOND QUERY ADDS GENRE FOR THAT NEW MOVIE
+      console.log(insertMovieGenreValues);
+      console.log(insertMovieGenreQuery);
       pool
         .query(insertMovieGenreQuery, insertMovieGenreValues)
         .then((result) => {

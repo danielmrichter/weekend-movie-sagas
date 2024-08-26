@@ -7,12 +7,12 @@ export default function NavBar() {
         {
             label: 'Home',
             icon: 'pi pi-home',
-            command: () => history.push('/')
+            command: () => history.push('/list')
         },
         {
             label: 'Search',
             icon: 'pi pi-search',
-            command: () => history.push('/search')
+            command: () => history.push('/')
         },
         {
             label: 'About',
