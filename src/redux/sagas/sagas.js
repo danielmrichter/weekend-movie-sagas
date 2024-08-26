@@ -6,6 +6,7 @@ export default function* rootSaga() {
   yield takeLatest("FETCH_MOVIES", fetchAllMovies);
   yield takeLatest("GET_MOVIE_DETAILS", getMovieDetails);
   yield takeLatest("SEARCH_MOVIES", searchMovies);
+  yield takeLatest('GET_GENRES', getGenres)
 }
 
 function* fetchAllMovies() {
@@ -49,5 +50,14 @@ function* searchMovies(action) {
     yield put({ type: "SET_SEARCH_RESULTS", payload: searchResponse.data.results });
   } catch (error) {
     console.log("Error searching movies: ", error);
+  }
+}
+
+function* getGenres() {
+  try {
+    const genreResponse = yield axios.get('/api/genres')
+    yield put({ type: 'SET_GENRES', payload: genreResponse.data})
+  } catch (error) {
+    console.log('Error getting genres: ', error)
   }
 }
